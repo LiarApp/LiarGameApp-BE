@@ -1,10 +1,16 @@
 package com.liargame.backend.Entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 
+@Entity
+@Table(name="mbti")
+@Setter
+@Getter
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,4 +25,12 @@ public class User {
 
     @Column(name = "login_path", nullable = true)
     private String loginPath;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
