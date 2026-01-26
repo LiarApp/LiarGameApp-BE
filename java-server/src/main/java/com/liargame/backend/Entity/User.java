@@ -7,7 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="mbti")
+@Table(name="users")
 @Setter
 @Getter
 @NoArgsConstructor
