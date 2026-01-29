@@ -27,7 +27,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/home", true)
+                        .defaultSuccessUrl("/auth/check-nickname", true)
                 );
 
         return http.build();

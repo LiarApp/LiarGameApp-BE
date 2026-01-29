@@ -17,7 +17,10 @@ public class User {
     @Column(name="id")
     private Long id;
 
-    @Column(name="nickname", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "nickname", nullable = true, unique = true)
     private String nickname;
 
     @Column(name = "profile_image", nullable = true)

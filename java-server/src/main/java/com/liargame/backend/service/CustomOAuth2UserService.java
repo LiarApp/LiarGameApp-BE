@@ -23,18 +23,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService  {
         // Google에서 받은 사용자 정보
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
         String picture = (String) attributes.get("picture");
 
         // DB에 사용자 저장 또는 업데이트
-        User user = userRepository.findByNickname(email)
+        User user = userRepository.findByEmail(email)
                 .orElse(new User());
 
-        user.setNickname(email);
-        user.setProfileImg(picture);
-        user.setLoginPath("google");
-
-        userRepository.save(user);
+        // 첫 로그인 시 기본 정보만 저장
+        if (user.getId() == null) {
+            user.setEmail(email);
+            user.setProfileImg(picture);
+            user.setLoginPath("google");
+            // nickname은 null로 남김
+            userRepository.save(user);
+        }
 
         return oAuth2User;
     }
