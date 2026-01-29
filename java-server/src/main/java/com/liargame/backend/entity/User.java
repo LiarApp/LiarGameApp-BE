@@ -1,4 +1,4 @@
-package com.liargame.backend.Entity;
+package com.liargame.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
