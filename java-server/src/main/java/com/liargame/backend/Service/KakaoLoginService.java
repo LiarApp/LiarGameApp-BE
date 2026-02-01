@@ -2,6 +2,11 @@ package com.liargame.backend.Service;
 
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoTokenResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoUserInfoResponse;
+import com.liargame.backend.Entity.SocialAccount;
+import com.liargame.backend.Entity.User;
+import com.liargame.backend.Repository.SocialAccountRepository;
+import com.liargame.backend.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -10,6 +15,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +32,10 @@ public class KakaoLoginService {
     private String clientSecret;
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private final UserRepository userRepository;
+    private final SocialAccountRepository socialAccountRepository;
 
+    // 카카오 URL을 반환합니다.
     public String getKakaoLoginUrl() {
         return UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
@@ -36,16 +46,34 @@ public class KakaoLoginService {
                 .toUriString();
     }
 
-    public Long kakaoLogin(String code) {
+    // 카카오 로그인을 진행합니다.
+    @Transactional
+    public void kakaoLogin(String code) {
         // 1. Access Token 발급
         String accessToken = getAccessToken(code);
 
-        // 2. 사용자 정보 가져오기
-        Long id = getUserInfo(accessToken);
+        // 2. 사용자 고유 ID 가져오기
+        String providerId = getUserInfo(accessToken);
 
-        return id;
+        // 3. 기존 소셜 계정 존재 여부 확인
+        Optional<SocialAccount> existingAccount = socialAccountRepository.findByProviderId(providerId);
+
+        // 4. 신규 가입
+        if (existingAccount.isEmpty()) {
+            User newUser = new User();
+            userRepository.save(newUser);
+
+            SocialAccount newSocialAccount = new SocialAccount();
+            newSocialAccount.setProviderId(providerId);
+            newSocialAccount.setProviderName("KAKAO");
+
+            newSocialAccount.setUser(newUser);
+            newUser.getSocialAccounts().add(newSocialAccount);
+            socialAccountRepository.save(newSocialAccount);
+        }
     }
 
+    // Access Token을 발급합니다.
     private String getAccessToken(String code) {
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
 
@@ -70,7 +98,8 @@ public class KakaoLoginService {
         return response.getAccessToken();
     }
 
-    private Long getUserInfo(String accessToken) {
+    // 사용자의 고유 ID를 반환합니다.
+    private String getUserInfo(String accessToken) {
         String infoUrl = "https://kapi.kakao.com/v2/user/me";
 
         // 1. Header 설정
@@ -89,6 +118,6 @@ public class KakaoLoginService {
         );
 
         // 3. 고유 ID 반환
-        return response.getBody().getId();
+        return String.valueOf(response.getBody().getId());
     }
 }
