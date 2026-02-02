@@ -65,7 +65,6 @@ public class KakaoLoginService {
 
             SocialAccount newSocialAccount = new SocialAccount();
             newSocialAccount.setProviderId(providerId);
-            newSocialAccount.setProviderName("KAKAO");
 
             newSocialAccount.setUser(newUser);
             newUser.getSocialAccounts().add(newSocialAccount);
