@@ -2,6 +2,7 @@ package com.liargame.backend.Service;
 
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoTokenResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoUserInfoResponse;
+import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.SocialAccount;
 import com.liargame.backend.Entity.User;
 import com.liargame.backend.Repository.SocialAccountRepository;
@@ -61,6 +62,7 @@ public class KakaoLoginService {
         // 4. 신규 가입
         if (existingAccount.isEmpty()) {
             User newUser = new User();
+            newUser.setLoginPath(LoginPath.KAKAO);
             userRepository.save(newUser);
 
             SocialAccount newSocialAccount = new SocialAccount();

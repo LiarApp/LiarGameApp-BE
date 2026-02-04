@@ -25,8 +25,9 @@ public class User {
     @Column(name="profile_image", nullable=true)
     private String profileImg;
 
+    @Enumerated(EnumType.STRING)
     @Column(name="login_path", nullable=true)
-    private String loginPath;
+    private LoginPath loginPath;
 
     @CreationTimestamp
     @Column(name="created_at", nullable=false, updatable=false)
