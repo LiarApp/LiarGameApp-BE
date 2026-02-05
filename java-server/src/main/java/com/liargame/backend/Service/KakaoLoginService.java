@@ -49,7 +49,7 @@ public class KakaoLoginService {
 
     // 카카오 로그인을 진행합니다.
     @Transactional
-    public void kakaoLogin(String code) {
+    public Long kakaoLogin(String code) {
         // 1. Access Token 발급
         String accessToken = getAccessToken(code);
 
@@ -57,21 +57,27 @@ public class KakaoLoginService {
         String providerId = getUserInfo(accessToken);
 
         // 3. 기존 소셜 계정 존재 여부 확인
-        Optional<SocialAccount> existingAccount = socialAccountRepository.findByProviderId(providerId);
+        Optional<SocialAccount> existingAccount = socialAccountRepository
+                .findByLoginPathAndProviderId(LoginPath.KAKAO, providerId);
 
         // 4. 신규 가입
         if (existingAccount.isEmpty()) {
             User newUser = new User();
-            newUser.setLoginPath(LoginPath.KAKAO);
             userRepository.save(newUser);
 
             SocialAccount newSocialAccount = new SocialAccount();
+            newSocialAccount.setLoginPath(LoginPath.KAKAO);
             newSocialAccount.setProviderId(providerId);
 
             newSocialAccount.setUser(newUser);
             newUser.getSocialAccounts().add(newSocialAccount);
             socialAccountRepository.save(newSocialAccount);
+
+            return newUser.getId();
+        } else {
+            return existingAccount.get().getUser().getId();
         }
+
     }
 
     // Access Token을 발급합니다.
