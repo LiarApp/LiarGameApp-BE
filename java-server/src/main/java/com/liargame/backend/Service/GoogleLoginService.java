@@ -87,7 +87,7 @@ public class GoogleLoginService {
     }
 
     @Transactional
-    public LoginResponse googleLogin(String code) {
+    public LoginResponse googleLogin(String code, LoginPath loginPath) {
         System.out.println("=== 구글 로그인 시작 ===");
         System.out.println("Code: " + code);
 
@@ -98,7 +98,7 @@ public class GoogleLoginService {
         System.out.println("✅ Google ID: " + googleId);
 
         Optional<SocialAccount> existingAccount = socialAccountRepository
-                .findByLoginPathAndProviderId(LoginPath.GOOGLE, googleId);
+                .findByLoginPathAndProviderId(loginPath, googleId);
         System.out.println("기존 계정 존재: " + existingAccount.isPresent());
 
         if (existingAccount.isPresent()) {
@@ -112,7 +112,7 @@ public class GoogleLoginService {
             System.out.println("✅ User 저장 완료, ID: " + newUser.getId());
 
             SocialAccount newAccount = new SocialAccount();
-            newAccount.setLoginPath(LoginPath.GOOGLE);
+            newAccount.setLoginPath(loginPath);
             newAccount.setProviderId(googleId);
             newAccount.setUser(newUser);
             socialAccountRepository.save(newAccount);

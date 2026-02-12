@@ -1,6 +1,7 @@
 package com.liargame.backend.Controller;
 
 import com.liargame.backend.DTO.LoginResponse;
+import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Service.KakaoLoginService;
 import com.liargame.backend.Service.GoogleLoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,8 +41,8 @@ public class LoginController {
 
     @Operation(summary="구글 로그인 시작", description="인가 코드를 이용해 로그인을 진행합니다.")
     @GetMapping("/google")
-    public ResponseEntity<LoginResponse> googleLogin(@RequestParam("code") String code) {
-        LoginResponse response = googleLoginService.googleLogin(code);
+    public ResponseEntity<LoginResponse> googleLogin(@RequestParam("code") String code, @RequestParam("loginPath")LoginPath loginPath) {
+        LoginResponse response = googleLoginService.googleLogin(code, loginPath);
         return ResponseEntity.ok(response);
     }
 }
