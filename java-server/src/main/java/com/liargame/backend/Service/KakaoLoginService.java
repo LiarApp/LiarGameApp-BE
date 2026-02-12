@@ -1,8 +1,10 @@
 package com.liargame.backend.Service;
 
+import com.liargame.backend.DTO.KakaoLoginDTO.KakaoLoginResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoTokenResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoUserInfoResponse;
 import com.liargame.backend.Entity.LoginPath;
+import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.SocialAccount;
 import com.liargame.backend.Entity.User;
 import com.liargame.backend.Repository.SocialAccountRepository;
@@ -49,7 +51,7 @@ public class KakaoLoginService {
 
     // 카카오 로그인을 진행합니다.
     @Transactional
-    public Long kakaoLogin(String code) {
+    public KakaoLoginResponse kakaoLogin(String code) {
         // 1. Access Token 발급
         String accessToken = getAccessToken(code);
 
@@ -62,20 +64,22 @@ public class KakaoLoginService {
 
         // 4. 신규 가입
         if (existingAccount.isEmpty()) {
+            // 사용자 엔티티 생성
             User newUser = new User();
+            newUser.setProfileImg(ProfileImg.IMAGE1);  // [추가] default 프로필 이미지 설정
             userRepository.save(newUser);
 
+            // 소셜 계정 엔티티 생성
             SocialAccount newSocialAccount = new SocialAccount();
             newSocialAccount.setLoginPath(LoginPath.KAKAO);
             newSocialAccount.setProviderId(providerId);
-
             newSocialAccount.setUser(newUser);
             newUser.getSocialAccounts().add(newSocialAccount);
             socialAccountRepository.save(newSocialAccount);
 
-            return newUser.getId();
+            return new KakaoLoginResponse(newUser.getId(), false);  // [수정] user_id 및 기존 회원 여부 반환
         } else {
-            return existingAccount.get().getUser().getId();
+            return new KakaoLoginResponse(existingAccount.get().getUser().getId(), true);
         }
 
     }

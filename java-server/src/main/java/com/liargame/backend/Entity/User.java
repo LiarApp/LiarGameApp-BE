@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.context.annotation.Profile;
+
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
@@ -23,8 +25,8 @@ public class User {
     @Column(name = "nickname", nullable = true, unique = true)
     private String nickname;
 
-    @Column(name = "profile_image", nullable = true)
-    private String profileImg;
+    @Column(name = "profile_image", nullable = false)
+    private ProfileImg profileImg;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
