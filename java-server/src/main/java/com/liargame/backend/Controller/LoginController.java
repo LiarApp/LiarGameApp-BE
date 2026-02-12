@@ -1,6 +1,7 @@
 package com.liargame.backend.Controller;
 
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoLoginResponse;
+import com.liargame.backend.DTO.LoginResponseDTO;
 import com.liargame.backend.Service.KakaoLoginService;
 import com.liargame.backend.Service.GoogleLoginService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,15 +44,8 @@ public class LoginController {
 
     @Operation(summary="구글 로그인 시작", description="인가 코드를 이용해 로그인을 진행합니다.")
     @GetMapping("/google")
-    public String googleLogin(
-            @RequestParam("code") String code,
-            HttpServletResponse response
-    ) throws IOException {
-        Long userId = googleLoginService.googleLogin(code);
-
-        // 프론트엔드로 리다이렉트
-//        String redirectUrl = "http://localhost:3000/login/success?userId=" + userId;
-//        response.sendRedirect(redirectUrl);
-        return "<h1>로그인 성공!</h1><p>User ID: " + userId + "</p>"; // 다시 void로 바꾸기
+    public ResponseEntity<LoginResponseDTO> googleLogin(@RequestParam("code") String code) {
+        LoginResponseDTO response = googleLoginService.googleLogin(code);
+        return ResponseEntity.ok(response);
     }
 }
