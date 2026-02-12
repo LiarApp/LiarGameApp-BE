@@ -2,7 +2,7 @@ package com.liargame.backend.Service;
 
 import com.liargame.backend.DTO.GoogleLoginDTO.GoogleTokenResponse;
 import com.liargame.backend.DTO.GoogleLoginDTO.GoogleUserInfoResponse;
-import com.liargame.backend.DTO.LoginResponseDTO;
+import com.liargame.backend.DTO.LoginResponse;
 import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.SocialAccount;
@@ -87,7 +87,7 @@ public class GoogleLoginService {
     }
 
     @Transactional
-    public LoginResponseDTO googleLogin(String code) {
+    public LoginResponse googleLogin(String code) {
         System.out.println("=== 구글 로그인 시작 ===");
         System.out.println("Code: " + code);
 
@@ -104,7 +104,7 @@ public class GoogleLoginService {
         if (existingAccount.isPresent()) {
             Long userId = existingAccount.get().getUser().getId();
             System.out.println("✅ 기존 회원 로그인, User ID: " + userId);
-            return new LoginResponseDTO(userId, true);  // [수정] user id, 회원 가입 여부를 반환하도록 수정
+            return new LoginResponse(userId, true);  // [수정] user id, 회원 가입 여부를 반환하도록 수정
         } else {
             User newUser = new User();
             newUser.setProfileImg(ProfileImg.IMAGE1);  // [추가] default 프로필 이미지 설정
@@ -119,7 +119,7 @@ public class GoogleLoginService {
             System.out.println("✅ SocialAccount 저장 완료");
 
             System.out.println("=== 구글 로그인 완료 ===");
-            return new LoginResponseDTO(newUser.getId(), false);
+            return new LoginResponse(newUser.getId(), false);
         }
     }
 }

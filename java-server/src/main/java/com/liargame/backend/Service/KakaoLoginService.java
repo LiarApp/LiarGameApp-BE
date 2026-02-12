@@ -1,8 +1,8 @@
 package com.liargame.backend.Service;
 
-import com.liargame.backend.DTO.KakaoLoginDTO.KakaoLoginResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoTokenResponse;
 import com.liargame.backend.DTO.KakaoLoginDTO.KakaoUserInfoResponse;
+import com.liargame.backend.DTO.LoginResponse;
 import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.SocialAccount;
@@ -51,7 +51,7 @@ public class KakaoLoginService {
 
     // 카카오 로그인을 진행합니다.
     @Transactional
-    public KakaoLoginResponse kakaoLogin(String code) {
+    public LoginResponse kakaoLogin(String code) {
         // 1. Access Token 발급
         String accessToken = getAccessToken(code);
 
@@ -77,9 +77,9 @@ public class KakaoLoginService {
             newUser.getSocialAccounts().add(newSocialAccount);
             socialAccountRepository.save(newSocialAccount);
 
-            return new KakaoLoginResponse(newUser.getId(), false);  // [수정] user_id 및 기존 회원 여부 반환
+            return new LoginResponse(newUser.getId(), false);  // [수정] user_id 및 기존 회원 여부 반환
         } else {
-            return new KakaoLoginResponse(existingAccount.get().getUser().getId(), true);
+            return new LoginResponse(existingAccount.get().getUser().getId(), true);
         }
 
     }
