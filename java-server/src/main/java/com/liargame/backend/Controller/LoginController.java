@@ -2,7 +2,6 @@ package com.liargame.backend.Controller;
 
 import com.liargame.backend.DTO.LoginResponse;
 import com.liargame.backend.Service.KakaoLoginService;
-import com.liargame.backend.Service.GoogleLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
