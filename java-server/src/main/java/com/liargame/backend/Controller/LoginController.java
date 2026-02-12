@@ -1,17 +1,12 @@
 package com.liargame.backend.Controller;
 
-import com.liargame.backend.DTO.KakaoLoginDTO.KakaoLoginResponse;
 import com.liargame.backend.DTO.LoginResponseDTO;
-import com.liargame.backend.Service.KakaoLoginService;
 import com.liargame.backend.Service.GoogleLoginService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import java.io.IOException;
 
 @CrossOrigin(origins = {"*"})
 @RestController
