@@ -16,6 +16,10 @@ public class SocialAccount {
     @Column(name="id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="login_path", nullable=true)
+    private LoginPath loginPath;
+
     // 소셜 서비스에서 제공하는 고유 id
     @Column(name="provider_id", nullable=false, unique=true)
     private String providerId;

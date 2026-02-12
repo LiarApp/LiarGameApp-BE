@@ -1,5 +1,6 @@
 package com.liargame.backend.Controller;
 
+import com.liargame.backend.DTO.KakaoLoginDTO.KakaoLoginResponse;
 import com.liargame.backend.Service.KakaoLoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,14 +30,8 @@ public class LoginController {
 
     @Operation(summary="카카오 로그인 시작", description="인가 코드를 이용해 로그인을 진행합니다.")
     @GetMapping("/kakao")
-    public void kakaoLogin(
-        @RequestParam("code") String code,
-        HttpServletResponse response
-    ) throws IOException {
-        kakaoLoginService.kakaoLogin(code);
-
-        // 프론트엔드로 리다이렉트
-        String redirectUrl = "";
-        response.sendRedirect(redirectUrl);
+    public ResponseEntity<KakaoLoginResponse> kakaoLogin(@RequestParam("code") String code) {
+        KakaoLoginResponse response = kakaoLoginService.kakaoLogin(code);
+        return ResponseEntity.ok(response);
     }
 }
