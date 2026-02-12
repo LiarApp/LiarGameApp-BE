@@ -1,10 +1,13 @@
 package com.liargame.backend.DTO.KakaoLoginDTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class KakaoUserInfoResponse {
+@AllArgsConstructor
+public class KakaoLoginResponse {
     private Long id;
+    private boolean isExist;
 }
