@@ -1,0 +1,6 @@
+fastapi
+pymysql
+redis
+faiss-cpu
+langchain-core
+langchain-openai
