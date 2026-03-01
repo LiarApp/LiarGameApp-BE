@@ -25,6 +25,7 @@ public class User {
     @Column(name = "nickname", nullable = true, unique = true)
     private String nickname;
 
+    @Enumerated(EnumType.STRING)  // enum으로 프로필이미지 관리
     @Column(name = "profile_image", nullable = false)
     private ProfileImg profileImg;
 
