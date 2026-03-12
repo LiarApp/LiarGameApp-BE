@@ -18,8 +18,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 사용자 닉네임, 프로필 이미지를 업데이트합니다.
     @Modifying
     @Query("UPDATE User u " +
-            "SET u.nickname = :nickname, u.profileImg = :profileImg " +
-            "WHERE u.id =: id"
+            "SET u.nickname = COALESCE(:nickname, u.nickname), " +
+            "u.profileImg = COALESCE(:profileImg, u.profileImg) " +
+            "WHERE u.id = :id"
     )
     int updateUserInfo(
         @Param("id") Long id,
