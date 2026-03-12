@@ -53,14 +53,14 @@ public class FriendController {
     }
 
     // 친구 추가 요청 거절
-    @DeleteMapping("request/{userId}/{friendId}")
+    @DeleteMapping("request/decline/{userId}/{friendId}")
     public ResponseEntity<Void> declineFriendRequest(@PathVariable Long userId, @PathVariable Long friendId) {
         friendService.declineFriendRequest(userId, friendId);
         return ResponseEntity.noContent().build();
     }
 
     // 보낸 친구 요청 취소
-    @DeleteMapping("/request/{userId}/{friendId}")
+    @DeleteMapping("/request/cancel/{userId}/{friendId}")
     public ResponseEntity<Void> cancelFriendRequest(@PathVariable Long userId, @PathVariable Long friendId) {
         friendService.cancelFriendRequest(userId, friendId);
         return ResponseEntity.noContent().build();

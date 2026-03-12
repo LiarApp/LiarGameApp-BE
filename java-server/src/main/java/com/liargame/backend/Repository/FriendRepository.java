@@ -38,7 +38,7 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @Query(
             "SELECT f " +
-            "FROM Friend F " +
+            "FROM Friend f " +
             "WHERE (f.sender = :user OR f.receiver = :user)" +
             "AND f.status = 'ACCEPTED'"
     )

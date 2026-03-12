@@ -103,6 +103,7 @@ public class FriendService {
     }
 
     // 보낸 친구 요청 취소
+    @Transactional
     public void cancelFriendRequest(Long userId, Long friendId) {
         User sender = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다: " + userId));
@@ -114,6 +115,7 @@ public class FriendService {
     }
 
     // 친구 삭제
+    @Transactional
     public void deleteFriendship(Long userId, Long friendId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다: " + userId));
