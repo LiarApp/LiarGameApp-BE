@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -32,11 +34,11 @@ public class Friend {
     @Column(name="status", nullable=false)
     private FriendStatus status;
 
-    @CreatedDate
-    @Column(name="created_at", updatable=false)
+    @CreationTimestamp
+    @Column(name="created_at", updatable=false, nullable=false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 }
