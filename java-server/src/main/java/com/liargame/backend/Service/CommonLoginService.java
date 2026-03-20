@@ -51,4 +51,16 @@ public class CommonLoginService {
 
         return new LoginResponse(account.getUser().getId(), true);
     }
+
+    @Transactional
+    public void changePassword(String phoneNumber, String currentPassword, String newPassword) {
+        CommonAccount account = commonAccountRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 전화번호입니다."));
+
+        if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        account.setPassword(passwordEncoder.encode(newPassword));
+    }
 }

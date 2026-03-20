@@ -5,6 +5,7 @@ import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Service.CommonLoginService;
 import com.liargame.backend.Service.KakaoLoginService;
 import com.liargame.backend.Service.GoogleLoginService;
+import com.liargame.backend.Service.SmsService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class LoginController {
     private final KakaoLoginService kakaoLoginService;
     private final GoogleLoginService googleLoginService;
     private final CommonLoginService commonLoginService;
+    private final SmsService smsService;
 
     @Operation(summary="카카오 로그인 url 제공", description="카카오 로그인 URL을 제공합니다.")
     @GetMapping("/kakao/url")
@@ -65,5 +67,21 @@ public class LoginController {
             @RequestParam String phoneNumber,
             @RequestParam String password) {
         return ResponseEntity.ok(commonLoginService.login(phoneNumber, password));
+    }
+
+    @Operation(summary = "인증번호 발송")
+    @PostMapping("/sms/send")
+    public ResponseEntity<String> sendSms(@RequestParam String phoneNumber) throws Exception {
+        smsService.sendVerificationCode(phoneNumber);
+        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+    }
+
+    @Operation(summary = "인증번호 검증")
+    @PostMapping("/sms/verify")
+    public ResponseEntity<String> verifySms(
+            @RequestParam String phoneNumber,
+            @RequestParam String code) {
+        smsService.verifyCode(phoneNumber, code);
+        return ResponseEntity.ok("인증이 완료되었습니다.");
     }
 }
