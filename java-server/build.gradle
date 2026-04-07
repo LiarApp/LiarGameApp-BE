@@ -45,6 +45,7 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:3.0.0' // dotenv 의존성 추가
     // twilio : sms service
     implementation 'com.twilio.sdk:twilio:10.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket' // 웹소켓 의존성 추가
 }
 
 tasks.named('test') {
