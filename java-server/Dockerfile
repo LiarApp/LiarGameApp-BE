@@ -26,8 +26,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 # Cloud Run은 기본적으로 8080 포트를 사용함
-ENV PORT 8080
 EXPOSE 8080
 
 # 애플리케이션 실행
-ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=8080", "-jar", "app.jar"]
