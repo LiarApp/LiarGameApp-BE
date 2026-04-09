@@ -28,20 +28,20 @@ public class Player {
     @JoinColumn(name = "game.id", nullable = false)
     private Game game;
 
-    @Column(name = "is_admin")
-    private String isAdmin;
+    @Column(name = "is_admin", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isAdmin = false;
 
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "is_citizen", columnDefinition = "TINYINT(1)")
-    private Boolean isCitizen;
+    @Column(name = "is_citizen", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isCitizen = false;
 
-    @Column(name = "is_won", columnDefinition = "TINYINT(1)")
-    private Boolean isWon;
+    @Column(name = "is_won", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isWon = false;
 
-    @Column(name = "earned_coin")
-    private Long earnedCoin;
+    @Column(name = "earned_coin DEFAULT 0")
+    private Long earnedCoin = 0L;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

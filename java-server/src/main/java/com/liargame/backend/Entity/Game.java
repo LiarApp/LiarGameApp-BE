@@ -27,13 +27,13 @@ public class Game {
     @Column(name = "mode", nullable = false)
     private Mode mode;
 
-    @Column(name = "n_people", columnDefinition = "TINYINT")
+    @Column(name = "n_people", columnDefinition = "TINYINT", nullable = false)
     private Integer numOfPeople;
 
-    @Column(name = "vote_time")
+    @Column(name = "vote_time", nullable = false)
     private Integer voteTime;
 
-    @Column(name = "answer_time")
+    @Column(name = "answer_time", nullable = false)
     private Integer answerTime;
 
     @ManyToOne(fetch=FetchType.LAZY)
@@ -46,7 +46,7 @@ public class Game {
     @Column(name = "liar_word")
     private String liarWord;
 
-    @Column(name = "cur_round", columnDefinition = "TINYINT")
+    @Column(name = "cur_round", columnDefinition = "TINYINT DEFAULT 1")
     private Integer curRound;
 
     @CreationTimestamp
