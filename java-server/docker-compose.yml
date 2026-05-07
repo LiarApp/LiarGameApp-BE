@@ -3,6 +3,7 @@ services:
     build: .      # Dockerfile로 이미지 직접 빌드
     ports:        # 포트 바운딩
       - "8080:8080"
+    restart: always
     environment:  # 환경 변수
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
