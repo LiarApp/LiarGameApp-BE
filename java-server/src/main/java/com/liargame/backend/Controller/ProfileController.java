@@ -1,7 +1,6 @@
 package com.liargame.backend.Controller;
 
-import com.liargame.backend.DTO.ProfileDTO.ProfileRequestDTO;
-import com.liargame.backend.DTO.ProfileDTO.ProfileResponseDTO;
+import com.liargame.backend.DTO.ProfileDTO;
 import com.liargame.backend.Service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +13,21 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
     private final ProfileService profileService;
 
-    @PostMapping("/update")
-    public ResponseEntity<ProfileResponseDTO> updateProfile(@RequestBody ProfileRequestDTO dto) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProfileDTO.Response> getProfile(@PathVariable Long id) {
+        // 사용자의 프로필을 조회합니다.
+        ProfileDTO.Response response = profileService.getProfile(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProfileDTO.UpdateResponse> updateProfile(
+        @PathVariable Long id,
+        ProfileDTO.UpdateRequest dto
+    ) {
         // 사용자 프로필을 업데이트합니다.
-        ProfileResponseDTO response = profileService.updateProfile(
-            dto.getId(),
+        ProfileDTO.UpdateResponse response = profileService.updateProfile(
+            id,
             dto.getNickname(),
             dto.getProfileImg()
         );

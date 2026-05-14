@@ -14,17 +14,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickname(String nickname);
     boolean existsByNickname(String nickname); // 중복 확인
-
-    // 사용자 닉네임, 프로필 이미지를 업데이트합니다.
-    @Modifying
-    @Query("UPDATE User u " +
-            "SET u.nickname = COALESCE(:nickname, u.nickname), " +
-            "u.profileImg = COALESCE(:profileImg, u.profileImg) " +
-            "WHERE u.id = :id"
-    )
-    int updateUserInfo(
-        @Param("id") Long id,
-        @Param("nickname") String nickname,
-        @Param("profileImg") ProfileImg profileImg
-    );
 }
