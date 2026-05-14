@@ -1,8 +1,6 @@
 package com.liargame.backend.Service;
 
-import com.liargame.backend.DTO.GoogleLoginDTO.GoogleTokenResponse;
-import com.liargame.backend.DTO.GoogleLoginDTO.GoogleUserInfoResponse;
-import com.liargame.backend.DTO.LoginResponse;
+import com.liargame.backend.DTO.LoginDTO;
 import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.SocialAccount;
@@ -61,10 +59,10 @@ public class GoogleLoginService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        ResponseEntity<GoogleTokenResponse> response = restTemplate.postForEntity(
+        ResponseEntity<LoginDTO.GoogleTokenResponse> response = restTemplate.postForEntity(
                 tokenUrl,
                 request,
-                GoogleTokenResponse.class
+                LoginDTO.GoogleTokenResponse.class
         );
         return response.getBody().getAccessToken();
     }
@@ -77,50 +75,39 @@ public class GoogleLoginService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        ResponseEntity<GoogleUserInfoResponse> response = restTemplate.exchange(
+        ResponseEntity<LoginDTO.GoogleUserInfoResponse> response = restTemplate.exchange(
                 userInfoUrl,
                 HttpMethod.GET,
                 request,
-                GoogleUserInfoResponse.class
+                LoginDTO.GoogleUserInfoResponse.class
         );
 
         return response.getBody().getId();
     }
 
     @Transactional
-    public LoginResponse googleLogin(String code, LoginPath loginPath) {
-        System.out.println("=== 구글 로그인 시작 ===");
-        System.out.println("Code: " + code);
-
+    public LoginDTO.Response googleLogin(String code, LoginPath loginPath) {
         String accessToken = getAccessToken(code);
-        System.out.println("Access Token 발급 성공: " + accessToken.substring(0, 20) + "...");
-
         String googleId = getUserInfo(accessToken);
-        System.out.println("Google ID: " + googleId);
 
         Optional<SocialAccount> existingAccount = socialAccountRepository
                 .findByLoginPathAndProviderId(loginPath, googleId);
-        System.out.println("기존 계정 존재: " + existingAccount.isPresent());
 
         if (existingAccount.isPresent()) {
             Long userId = existingAccount.get().getUser().getId();
-            System.out.println("기존 회원 로그인, User ID: " + userId);
-            return new LoginResponse(userId, true);  // [수정] user id, 회원 가입 여부를 반환하도록 수정
+            return new LoginDTO.Response(userId, true);  // [수정] user id, 회원 가입 여부를 반환하도록 수정
         } else {
             User newUser = new User();
             newUser.setProfileImg(ProfileImg.IMAGE1);  // [추가] default 프로필 이미지 설정
             userRepository.save(newUser);
-            System.out.println("User 저장 완료, ID: " + newUser.getId());
 
             SocialAccount newAccount = new SocialAccount();
             newAccount.setLoginPath(loginPath);
             newAccount.setProviderId(googleId);
             newAccount.setUser(newUser);
             socialAccountRepository.save(newAccount);
-            System.out.println("SocialAccount 저장 완료");
 
-            System.out.println("=== 구글 로그인 완료 ===");
-            return new LoginResponse(newUser.getId(), false);
+            return new LoginDTO.Response(newUser.getId(), false);
         }
     }
 }

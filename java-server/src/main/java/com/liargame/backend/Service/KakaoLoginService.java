@@ -1,8 +1,6 @@
 package com.liargame.backend.Service;
 
-import com.liargame.backend.DTO.KakaoLoginDTO.KakaoTokenResponse;
-import com.liargame.backend.DTO.KakaoLoginDTO.KakaoUserInfoResponse;
-import com.liargame.backend.DTO.LoginResponse;
+import com.liargame.backend.DTO.LoginDTO;
 import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.SocialAccount;
@@ -51,18 +49,15 @@ public class KakaoLoginService {
 
     // 카카오 로그인을 진행합니다.
     @Transactional
-    public LoginResponse kakaoLogin(String code) {
-        // 1. Access Token 발급
+    public LoginDTO.Response kakaoLogin(String code) {
         String accessToken = getAccessToken(code);
-
-        // 2. 사용자 고유 ID 가져오기
         String providerId = getUserInfo(accessToken);
 
-        // 3. 기존 소셜 계정 존재 여부 확인
+        // 기존 소셜 계정 존재 여부 확인
         Optional<SocialAccount> existingAccount = socialAccountRepository
                 .findByLoginPathAndProviderId(LoginPath.KAKAO, providerId);
 
-        // 4. 신규 가입
+        // 신규 가입
         if (existingAccount.isEmpty()) {
             // 사용자 엔티티 생성
             User newUser = new User();
@@ -77,9 +72,9 @@ public class KakaoLoginService {
             newUser.getSocialAccounts().add(newSocialAccount);
             socialAccountRepository.save(newSocialAccount);
 
-            return new LoginResponse(newUser.getId(), false);  // [수정] user_id 및 기존 회원 여부 반환
+            return new LoginDTO.Response(newUser.getId(), false);  // [수정] user_id 및 기존 회원 여부 반환
         } else {
-            return new LoginResponse(existingAccount.get().getUser().getId(), true);
+            return new LoginDTO.Response(existingAccount.get().getUser().getId(), true);
         }
 
     }
@@ -104,7 +99,7 @@ public class KakaoLoginService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         // 4. POST 요청 및 응답 받기
-        KakaoTokenResponse response = restTemplate.postForObject(tokenUrl, request, KakaoTokenResponse.class);
+        LoginDTO.KakaoTokenResponse response = restTemplate.postForObject(tokenUrl, request, LoginDTO.KakaoTokenResponse.class);
 
         return response.getAccessToken();
     }
@@ -121,11 +116,11 @@ public class KakaoLoginService {
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         // 2. 카카오에 사용자 정보 요청
-        ResponseEntity<KakaoUserInfoResponse> response = restTemplate.exchange(
+        ResponseEntity<LoginDTO.KakaoUserInfoResponse> response = restTemplate.exchange(
                 infoUrl,
                 HttpMethod.GET,
                 request,
-                KakaoUserInfoResponse.class
+                LoginDTO.KakaoUserInfoResponse.class
         );
 
         // 3. 고유 ID 반환
