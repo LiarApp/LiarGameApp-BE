@@ -1,7 +1,5 @@
 package com.liargame.backend.Service;
 
-import com.liargame.backend.DTO.GoogleLoginDTO.GoogleTokenResponse;
-import com.liargame.backend.DTO.GoogleLoginDTO.GoogleUserInfoResponse;
 import com.liargame.backend.DTO.LoginDTO;
 import com.liargame.backend.Entity.LoginPath;
 import com.liargame.backend.Entity.ProfileImg;
@@ -61,10 +59,10 @@ public class GoogleLoginService {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
-        ResponseEntity<GoogleTokenResponse> response = restTemplate.postForEntity(
+        ResponseEntity<LoginDTO.GoogleTokenResponse> response = restTemplate.postForEntity(
                 tokenUrl,
                 request,
-                GoogleTokenResponse.class
+                LoginDTO.GoogleTokenResponse.class
         );
         return response.getBody().getAccessToken();
     }
@@ -77,11 +75,11 @@ public class GoogleLoginService {
 
         HttpEntity<String> request = new HttpEntity<>(headers);
 
-        ResponseEntity<GoogleUserInfoResponse> response = restTemplate.exchange(
+        ResponseEntity<LoginDTO.GoogleUserInfoResponse> response = restTemplate.exchange(
                 userInfoUrl,
                 HttpMethod.GET,
                 request,
-                GoogleUserInfoResponse.class
+                LoginDTO.GoogleUserInfoResponse.class
         );
 
         return response.getBody().getId();
