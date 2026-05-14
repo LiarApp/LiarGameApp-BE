@@ -1,6 +1,6 @@
 package com.liargame.backend.Service;
 
-import com.liargame.backend.DTO.LoginResponse;
+import com.liargame.backend.DTO.LoginDTO;
 import com.liargame.backend.Entity.CommonAccount;
 import com.liargame.backend.Entity.ProfileImg;
 import com.liargame.backend.Entity.User;
@@ -21,7 +21,7 @@ public class CommonLoginService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public LoginResponse register(String phoneNumber, String rawPassword) {
+    public LoginDTO.Response register(String phoneNumber, String rawPassword) {
         // 전화번호 중복 확인
         if (commonAccountRepository.findByPhoneNumber(phoneNumber).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 전화번호입니다.");
@@ -37,11 +37,11 @@ public class CommonLoginService {
         account.setUser(newUser);
         commonAccountRepository.save(account);
 
-        return new LoginResponse(newUser.getId(), false);
+        return new LoginDTO.Response(newUser.getId(), false);
     }
 
     @Transactional(readOnly = true)
-    public LoginResponse login(String phoneNumber, String rawPassword) {
+    public LoginDTO.Response login(String phoneNumber, String rawPassword) {
         CommonAccount account = commonAccountRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 전화번호입니다."));
 
@@ -49,7 +49,7 @@ public class CommonLoginService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        return new LoginResponse(account.getUser().getId(), true);
+        return new LoginDTO.Response(account.getUser().getId(), true);
     }
 
     @Transactional
